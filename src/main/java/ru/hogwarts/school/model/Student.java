@@ -1,36 +1,32 @@
 package ru.hogwarts.school.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 
 @Entity(name = "student")
-@Schema(description = "Студент")
 public class Student {
-    @Schema(description = "Идентификатор студента")
     @Min(1)
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Schema(description = "Имя студента")
     @Column(name = "student_name", nullable = false, length = 100)
     private String name;
-    @Schema(description = "Возраст студента")
     @Min(7)
     @Column(name = "student_age", nullable = false)
     private int age;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "faculty_id")
+    private Faculty faculty;
+
     public Student() {
     }
 
-    public Student(Long id, String name, int age) {
+    public Student(Long id, String name, int age, Faculty faculty) {
         this.id = id;
         this.name = name;
         this.age = age;
+        this.faculty = faculty;
     }
 
     public Long getId() {
@@ -55,6 +51,14 @@ public class Student {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 
     @Override
