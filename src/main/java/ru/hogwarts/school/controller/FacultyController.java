@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.dto.FacultyDTO;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
@@ -22,21 +22,30 @@ public class FacultyController {
 
     @Operation(summary = "Создание факультета", description = "Добавление нового факультета")
     @PostMapping
-    public ResponseEntity<Faculty> createStudent(@RequestBody Faculty faculty) {
-        Faculty createdFaculty = facultyService.createFaculty(faculty);
-        if (createdFaculty == null) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<FacultyDTO> createFaculty(@RequestBody FacultyDTO facultyDTO) {
+        FacultyDTO createdFaculty = facultyService.createFaculty(facultyDTO);
         return ResponseEntity.ok(createdFaculty);
     }
 
     @Operation(summary = "Получение факультета", description = "Поиск факультета по его идентификатору")
     @GetMapping("{facultyId}")
-    public ResponseEntity<Faculty> getFaculty(
+    public ResponseEntity<FacultyDTO> getFaculty(
             @PathVariable
             @Parameter(description = "Идентификатор факультета") Long facultyId) {
-        Faculty faculty = facultyService.getFacultyById(facultyId);
-        if (faculty == null) {
+        FacultyDTO faculty = facultyService.getFacultyById(facultyId);
+        if (faculty == FacultyDTO.EMPTY) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(faculty);
+    }
+
+    @Operation(summary = "Получение факультета по имени", description = "Поиск факультета по его имени, игнорирую регистр")
+    @GetMapping()
+    public ResponseEntity<FacultyDTO> getFacultyByName(
+            @RequestParam
+            @Parameter(description = "Имя факультета") String facultyName) {
+        FacultyDTO faculty = facultyService.getFacultyByName(facultyName);
+        if (faculty == FacultyDTO.EMPTY) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(faculty);
@@ -44,9 +53,9 @@ public class FacultyController {
 
     @Operation(summary = "Получение всех факультетов", description = "Получение всех факультетов в виде списка")
     @GetMapping("/all")
-    public ResponseEntity<List<Faculty>> getAllFaculties() {
-        List<Faculty> faculties = facultyService.getAllFaculties();
-        if (faculties == null) {
+    public ResponseEntity<List<FacultyDTO>> getAllFaculties() {
+        List<FacultyDTO> faculties = facultyService.getAllFaculties();
+        if (faculties.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(faculties);
@@ -56,9 +65,9 @@ public class FacultyController {
             summary = "Получение всех факультетов заданного цвета",
             description = "Получение списка всех факультетов заданного цвета")
     @GetMapping("/all_by_color/{color}")
-    public ResponseEntity<List<Faculty>> getAllFacultiesByColor(@PathVariable String color) {
-        List<Faculty> faculties = facultyService.getAllFacultiesByColor(color);
-        if (faculties == null) {
+    public ResponseEntity<List<FacultyDTO>> getAllFacultiesByColor(@PathVariable String color) {
+        List<FacultyDTO> faculties = facultyService.getAllFacultiesByColor(color);
+        if (faculties.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(faculties);
@@ -66,9 +75,9 @@ public class FacultyController {
 
     @Operation(summary = "Редактирование факультета", description = "Изменение информации по имеющемуся факультету")
     @PutMapping
-    public ResponseEntity<Faculty> updateFaculty(@RequestBody Faculty faculty) {
-        Faculty updatedFaculty = facultyService.updateFaculty(faculty);
-        if (updatedFaculty == null) {
+    public ResponseEntity<FacultyDTO> updateFaculty(@RequestBody FacultyDTO facultyDTO) {
+        FacultyDTO updatedFaculty = facultyService.updateFaculty(facultyDTO);
+        if (updatedFaculty == FacultyDTO.EMPTY) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updatedFaculty);
@@ -76,11 +85,11 @@ public class FacultyController {
 
     @Operation(summary = "Удаление факультета", description = "Удаление факультета по его идентификатору")
     @DeleteMapping("{facultyId}")
-    public ResponseEntity<Faculty> deleteFaculty(
+    public ResponseEntity<FacultyDTO> deleteFaculty(
             @PathVariable
             @Parameter(description = "Идентификатор студента") Long facultyId) {
-        Faculty faculty = facultyService.deleteFacultyById(facultyId);
-        if (faculty == null) {
+        FacultyDTO faculty = facultyService.deleteFacultyById(facultyId);
+        if (faculty == FacultyDTO.EMPTY) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(faculty);

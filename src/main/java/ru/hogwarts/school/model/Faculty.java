@@ -1,28 +1,24 @@
 package ru.hogwarts.school.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
+import java.util.List;
 
 @Entity(name = "faculty")
-@Schema
 public class Faculty {
-    @Schema(description = "Идентификатор факультета")
     @Min(1)
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
-    @Schema(description = "Название факультета")
-    @Column(name = "faculty_name", nullable = false, length = 50)
+
+    @Column(name = "faculty_name", nullable = false, length = 50, unique = true)
     private String name;
 
-    @Schema(description = "Цвет факультета")
     @Column(name = "faculty_color", nullable = false, length = 30)
     private String color;
+
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
+    private List<Student> students;
 
     public Faculty() {
     }
@@ -55,6 +51,14 @@ public class Faculty {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
     @Override

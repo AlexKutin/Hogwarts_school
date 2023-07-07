@@ -1,10 +1,11 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
-import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.dto.FacultyDTO;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
@@ -16,34 +17,51 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public Faculty createFaculty(Faculty faculty) {
-        return facultyRepository.save(faculty);
+    public FacultyDTO createFaculty(FacultyDTO facultyDTO) {
+        facultyDTO.setId(null);
+        return FacultyDTO.fromFaculty(facultyRepository.save(facultyDTO.toFaculty()));
     }
 
     @Override
-    public Faculty getFacultyById(Long facultyId) {
-        return facultyRepository.findById(facultyId).orElse(null);
+    public FacultyDTO getFacultyById(Long facultyId) {
+        return facultyRepository.findById(facultyId)
+                .map(FacultyDTO::fromFaculty)
+                .orElse(FacultyDTO.EMPTY);
     }
 
     @Override
-    public List<Faculty> getAllFaculties() {
-        return facultyRepository.findAll();
+    public List<FacultyDTO> getAllFaculties() {
+        return facultyRepository.findAll()
+                .stream()
+                .map(FacultyDTO::fromFaculty)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Faculty updateFaculty(Faculty faculty) {
-        return facultyRepository.save(faculty);
+    public FacultyDTO updateFaculty(FacultyDTO facultyDTO) {
+        if (facultyRepository.findById(facultyDTO.getId()).isPresent()) {
+            return FacultyDTO.fromFaculty(facultyRepository.save(facultyDTO.toFaculty()));
+        }
+        return FacultyDTO.EMPTY;
     }
 
     @Override
-    public Faculty deleteFacultyById(Long facultyId) {
-        Faculty deletedFaculty = facultyRepository.findById(facultyId).orElse(null);
+    public FacultyDTO deleteFacultyById(Long facultyId) {
+        FacultyDTO deletedFaculty = getFacultyById(facultyId);
         facultyRepository.deleteById(facultyId);
         return deletedFaculty;
     }
 
     @Override
-    public List<Faculty> getAllFacultiesByColor(String color) {
-        return facultyRepository.findByColorIgnoreCase(color);
+    public List<FacultyDTO> getAllFacultiesByColor(String color) {
+        return facultyRepository.findByColorIgnoreCase(color)
+                .stream()
+                .map(FacultyDTO::fromFaculty)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public FacultyDTO getFacultyByName(String facultyName) {
+        return FacultyDTO.fromFaculty(facultyRepository.findFacultyByNameIgnoreCase(facultyName));
     }
 }
