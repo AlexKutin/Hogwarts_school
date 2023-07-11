@@ -63,6 +63,42 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
+    @Operation(summary = "Получение всех студентов постранично", description = "Получение всех студентов в виде списка постранично (макс. 50 на странице")
+    @GetMapping("/all/by_page")
+    public ResponseEntity<List<StudentDTO>> getAllStudentsBaPage(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size) {
+        if (size < 0 || size > 50) {
+            size = 50;
+        }
+        List<StudentDTO> students = studentService.getStudentsByPage(page, size);
+        if (students.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(students);
+    }
+
+
+    @Operation(summary = "Получение количества всех студентов", description = "Получение количества всех студентов в школе")
+    @GetMapping("/all/count")
+    public ResponseEntity<Long> getCountAllStudents() {
+        return ResponseEntity.ok(studentService.getCountAllStudents());
+    }
+
+    @Operation(summary = "Получение среднего возраста студентов", description = "Получение среднего возраста студентов в школе")
+    @GetMapping("/all/average_age")
+    public ResponseEntity<Float> getAverageAgeStudents() {
+        return ResponseEntity.ok(studentService.getAverageAgeStudents());
+    }
+
+    @Operation(summary = "Получение 5 самых молодых студентов", description = "Получение 5 самых молодых студентов")
+    @GetMapping("/all/top5_young")
+    public ResponseEntity<List<StudentDTO>> getTop5YoungStudents() {
+        List<StudentDTO> students = studentService.getTop5YoungStudents();
+        if (students.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(students);
+    }
+
     @Operation(
             summary = "Получение всех студентов заданного возраста",
             description = "Получение всех студентов заданного возраста в виде коллекции")

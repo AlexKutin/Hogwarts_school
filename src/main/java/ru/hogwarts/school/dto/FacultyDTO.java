@@ -5,7 +5,7 @@ import ru.hogwarts.school.model.Faculty;
 
 @Schema(description = "Факультет")
 public class FacultyDTO {
-    public static FacultyDTO EMPTY = new FacultyDTO(0L, "", "");
+    public static final FacultyDTO EMPTY = new FacultyDTO(0L, "", "");
 
     @Schema(description = "Идентификатор факультета")
     private Long id;
