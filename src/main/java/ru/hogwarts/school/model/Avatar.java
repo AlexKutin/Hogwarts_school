@@ -1,5 +1,7 @@
 package ru.hogwarts.school.model;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 
 @Entity(name = "avatar")
@@ -9,6 +11,8 @@ public class Avatar {
     private String filePath;
     private long fileSize;
     private String mediaType;
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] data;
 
     @OneToOne(fetch = FetchType.LAZY)
