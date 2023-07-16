@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: alexkutin
+      changes:
+        - createTable:
+            tableName: student
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: student_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: student_age
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: faculty_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: alexkutin
+      changes:
+        - sql:
+            dbms: 'all'
+            sql: alter table student add constraint check_student_age check (student_age >= 16);
+

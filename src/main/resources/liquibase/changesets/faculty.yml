@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: alexkutin
+      changes:
+        - createTable:
+            tableName: faculty
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: faculty_color
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: faculty_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: alexkutin
+      changes:
+        - addUniqueConstraint:
+            columnNames: faculty_name
+            constraintName: faculty_name_unique_const
+            tableName: faculty
