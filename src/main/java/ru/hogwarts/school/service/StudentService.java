@@ -23,4 +23,12 @@ public interface StudentService {
     FacultyDTO getFacultyByStudentId(Long studentId);
 
     List<StudentDTO> getStudentsByFacultyId(Long facultyId);
+
+    Long getCountAllStudents();
+
+    Float getAverageAgeStudents();
+
+    List<StudentDTO> getTop5YoungStudents();
+
+    List<StudentDTO> getStudentsByPage(int page, int size);
 }

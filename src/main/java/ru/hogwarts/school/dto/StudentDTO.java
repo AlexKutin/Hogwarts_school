@@ -5,20 +5,21 @@ import ru.hogwarts.school.model.Student;
 
 @Schema(description = "Студент")
 public class StudentDTO {
-    public static StudentDTO EMPTY = new StudentDTO(0L, "", 0, null);
+    public static final StudentDTO EMPTY = new StudentDTO(0L, "", 0, 0);
     @Schema(description = "Идентификатор студента")
     private Long id;
     @Schema(description = "Имя студента")
     private String name;
     @Schema(description = "Возраст студента")
     private int age;
-    private FacultyDTO facultyDTO;
+    @Schema(description = "Идентификатор факультета")
+    private long facultyId;
 
-    public StudentDTO(Long id, String name, int age, FacultyDTO facultyDTO) {
+    public StudentDTO(Long id, String name, int age, long facultyId) {
         this.id = id;
         this.name = name;
         this.age = age;
-        this.facultyDTO = facultyDTO;
+        this.facultyId = facultyId;
     }
 
     public Long getId() {
@@ -45,20 +46,19 @@ public class StudentDTO {
         this.age = age;
     }
 
-    public FacultyDTO getFacultyDTO() {
-        return facultyDTO;
+    public long getFacultyId() {
+        return facultyId;
     }
 
-    public void setFacultyDTO(FacultyDTO facultyDTO) {
-        this.facultyDTO = facultyDTO;
+    public void setFacultyId(long facultyId) {
+        this.facultyId = facultyId;
     }
 
     public static StudentDTO fromStudent(Student student) {
-        return new StudentDTO(student.getId(), student.getName(), student.getAge(),
-                FacultyDTO.fromFaculty(student.getFaculty()));
+        return new StudentDTO(student.getId(), student.getName(), student.getAge(), student.getFaculty().getId());
     }
 
     public Student toStudent() {
-        return new Student(this.getId(), this.getName(), this.getAge(), this.getFacultyDTO().toFaculty());
+        return new Student(this.getId(), this.getName(), this.getAge());
     }
 }
